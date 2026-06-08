@@ -306,6 +306,11 @@ img { max-width: 100%; }
   border-radius: var(--radius);
   overflow: hidden;
 }
+#statsRow{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
 
 .table-header {
   padding: 1.25rem 1.5rem;
