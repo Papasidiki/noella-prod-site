@@ -832,3 +832,16 @@ textarea.form-control-admin { resize: vertical; min-height: 100px; }
   gap:.75rem;
   margin-top:1rem;
 }
+
+@media (max-width:768px){
+
+  .table-card{
+    overflow-x:auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-table{
+    min-width:900px;
+  }
+
+}
