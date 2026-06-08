@@ -837,8 +837,11 @@ textarea.form-control-admin { resize: vertical; min-height: 100px; }
   .table-card{
     overflow-x:auto;
     -webkit-overflow-scrolling: touch;
+     width:100%;
   }
-
+.table-card .admin-table{
+    min-width:700px;
+  }
    
 
 }
