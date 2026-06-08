@@ -665,8 +665,7 @@ textarea.form-control-admin { resize: vertical; min-height: 100px; }
   .sidebar.open { transform: translateX(0); }
   .admin-main { margin-left: 0; }
   .admin-content { padding: 1.25rem 1rem; }
-  .admin-table th:nth-child(n+4),
-  .admin-table td:nth-child(n+4) { display: none; }
+ 
 }
 
 /* ── Utilities ───────────────────────────────────────────── */
