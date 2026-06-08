@@ -149,31 +149,26 @@ img { max-width: 100%; }
    pour les cards
    ============================================================ */
   /* ── Stat Cards ──────────────────────────────────────────── */
-.stat-card{
-  background: var(--noir-2);
-  border: 1px solid rgba(245,240,234,.06);
-  border-radius: 8px;
-  padding: .7rem;
-  display:flex;
-  align-items:center;
-  gap:.7rem;
-  min-height:70px;
-  transition: all .25s ease;
-}
+
 
 .stat-card:hover{
   border-color: rgba(232,99,26,.25);
 }
 
 .stat-icon{
-  width:36px;
-  height:36px;
-  border-radius:8px;
+  width:52px;
+  height:52px;
+  border-radius:14px;
+  font-size:1.2rem;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:.9rem;
-  flex-shrink:0;
+}
+
+.stat-val{
+  font-size:2rem;
+  font-weight:700;
+  line-height:1;
 }
 
 .stat-icon.success{
@@ -194,11 +189,7 @@ img { max-width: 100%; }
   color: var(--warning);
 }
 
-.stat-val{
-  font-size:1.2rem;
-  font-weight:700;
-  line-height:1;
-}
+
 
 .stat-lbl{
   font-size:.65rem;
@@ -206,8 +197,29 @@ img { max-width: 100%; }
   margin-top:.15rem;
   text-transform:uppercase;
 }
+.stat-card{
+  background:linear-gradient(
+    135deg,
+    rgba(26,34,53,.95),
+    rgba(15,21,32,.95)
+  );
+  border:1px solid rgba(232,99,26,.12);
+  border-radius:18px;
+  padding:1.25rem;
+  min-height:160px;
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  transition:.3s ease;
+  box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
 
 
+.stat-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--orange);
+  box-shadow:0 20px 40px rgba(232,99,26,.12);
+}
 
 .user-avatar {
   width: 34px; height: 34px;
@@ -306,11 +318,7 @@ img { max-width: 100%; }
   border-radius: var(--radius);
   overflow: hidden;
 }
-#statsRow{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
+
 
 .table-header {
   padding: 1.25rem 1.5rem;
@@ -677,3 +685,80 @@ textarea.form-control-admin { resize: vertical; min-height: 100px; }
   margin: 2rem auto;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* Dashboard Pro */
+.admin-topbar{
+  background:rgba(15,21,32,.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(232,99,26,.12);
+}
+
+.sidebar{
+  background:linear-gradient(
+      180deg,
+      #0f1520 0%,
+      #080b10 100%
+  );
+}
+
+
+.table-card{
+  border-radius:16px;
+}
+
+@media(max-width:768px){
+  #statsRow{
+    grid-template-columns:1fr;
+  }
+}
+
+#menuBtn{
+  display:none;
+}
+
+
+
+/* Premium Dashboard */
+.table-card{
+  background: var(--noir-2);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.20);
+}
+
+.admin-topbar{
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
+}
+
+.sidebar{
+  box-shadow: 4px 0 30px rgba(0,0,0,.35);
+}
+
+.sidebar-nav a{
+  margin: 3px 8px;
+  border-radius: 10px;
+}
+
+.sidebar-nav a.active{
+  background: rgba(232,99,26,.15);
+}
+
+@media(max-width:768px){
+
+  .sidebar{
+    width:280px;
+    z-index:9999;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .sidebar::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    z-index:-1;
+  }
+}
