@@ -839,8 +839,6 @@ textarea.form-control-admin { resize: vertical; min-height: 100px; }
     -webkit-overflow-scrolling: touch;
   }
 
-   .admin-table{
-    min-width:690px;
-  }
+   
 
 }
