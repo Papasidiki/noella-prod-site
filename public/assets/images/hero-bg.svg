@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A0A0A"/>
+      <stop offset="50%" style="stop-color:#1A1000"/>
+      <stop offset="100%" style="stop-color:#0A0A0A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g1)"/>
+  <text x="960" y="520" font-family="serif" font-size="48" fill="#C9A84C" text-anchor="middle" opacity="0.4">NOELLA-PROD</text>
+  <text x="960" y="580" font-family="sans-serif" font-size="22" fill="#8A8070" text-anchor="middle" opacity="0.5">🎬 Production Audiovisuelle Guinéenne</text>
+</svg>
