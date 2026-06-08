@@ -83,7 +83,7 @@
     loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Connexion…';
 
     try {
-      const res  = await fetch('/api/login', {
+      const res  = await fetch('https://noella-prod.sanoh5347.workers.dev/api/login', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ username, password }),
