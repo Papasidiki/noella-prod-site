@@ -3,7 +3,7 @@
    Shared utilities: auth, sidebar, toast, modal, API calls
    ============================================================ */
 
-const API = '/api';
+const API = 'https://noella-prod.sanoh5347.workers.dev/api';
 
 /* ── Auth Guard ─────────────────────────────────────────── */
 function getToken() {
