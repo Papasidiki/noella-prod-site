@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramètres — Admin NOELLA-PROD</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand" style="padding:1rem 1.25rem;">
+      <img src="https://noella-prod.sanoh5347.workers.dev/assets/logo-D7SCA-cE.png"
+           alt="NOELLA-PROD" style="height:32px;width:auto;">
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a href="projects.html"><i class="fa-solid fa-clapperboard"></i> Projets</a>
+      <a href="messages.html"><i class="fa-solid fa-envelope"></i> Messages</a>
+      <div class="nav-section-label">Contenu</div>
+      <a href="services-admin.html"><i class="fa-solid fa-list"></i> Services</a>
+      <a href="testimonials.html"><i class="fa-solid fa-star"></i> Témoignages</a>
+      <div class="nav-section-label">Système</div>
+      <a href="settings.html"><i class="fa-solid fa-gear"></i> Paramètres</a>
+      <a href="../public/index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Voir le site</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="user-info"><strong id="sidebarUsername">Admin</strong><small>Administrateur</small></div>
+      </div>
+      <button class="btn-logout" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-title"><i class="fa-solid fa-gear text-orange me-2"></i>Paramètres du site</div>
+    </div>
+
+    <div class="admin-content">
+      <div class="row g-3">
+
+        <!-- Infos générales -->
+        <div class="col-lg-6">
+          <div class="table-card">
+            <div class="table-header"><h3><i class="fa-solid fa-circle-info me-2 text-orange"></i>Informations générales</h3></div>
+            <div style="padding:1.5rem;">
+              <div class="form-group-admin">
+                <label>Nom du site</label>
+                <input type="text" id="siteName" class="form-control-admin" value="NOELLA-PROD">
+              </div>
+              <div class="form-group-admin">
+                <label>Slogan</label>
+                <input type="text" id="siteSlogan" class="form-control-admin" value="Transformer les récits africains en actifs économiques">
+              </div>
+              <div class="form-group-admin">
+                <label>Email de contact</label>
+                <input type="email" id="siteEmail" class="form-control-admin" value="info@noella-prod.com">
+              </div>
+              <div class="form-group-admin">
+                <label>Numéro WhatsApp (format international)</label>
+                <input type="text" id="siteWhatsapp" class="form-control-admin" value="224622000000" placeholder="224XXXXXXXXX">
+              </div>
+              <div class="form-group-admin">
+                <label>Adresse</label>
+                <input type="text" id="siteAddress" class="form-control-admin" value="Dubréka, République de Guinée">
+              </div>
+              <button class="btn-admin primary" onclick="saveSettings('general')">
+                <i class="fa-solid fa-floppy-disk me-1"></i> Sauvegarder
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Réseaux sociaux -->
+        <div class="col-lg-6">
+          <div class="table-card">
+            <div class="table-header"><h3><i class="fa-solid fa-share-nodes me-2 text-orange"></i>Réseaux sociaux</h3></div>
+            <div style="padding:1.5rem;">
+              <div class="form-group-admin">
+                <label><i class="fab fa-facebook-f me-2"></i>Facebook</label>
+                <input type="url" id="socialFacebook" class="form-control-admin" placeholder="https://facebook.com/…">
+              </div>
+              <div class="form-group-admin">
+                <label><i class="fab fa-instagram me-2"></i>Instagram</label>
+                <input type="url" id="socialInstagram" class="form-control-admin" placeholder="https://instagram.com/…">
+              </div>
+              <div class="form-group-admin">
+                <label><i class="fab fa-youtube me-2"></i>YouTube</label>
+                <input type="url" id="socialYoutube" class="form-control-admin" placeholder="https://youtube.com/…">
+              </div>
+              <div class="form-group-admin">
+                <label><i class="fab fa-tiktok me-2"></i>TikTok</label>
+                <input type="url" id="socialTiktok" class="form-control-admin" placeholder="https://tiktok.com/@…">
+              </div>
+              <button class="btn-admin primary" onclick="saveSettings('social')">
+                <i class="fa-solid fa-floppy-disk me-1"></i> Sauvegarder
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sécurité -->
+        <div class="col-lg-6">
+          <div class="table-card">
+            <div class="table-header"><h3><i class="fa-solid fa-lock me-2 text-orange"></i>Sécurité — Changer le mot de passe</h3></div>
+            <div style="padding:1.5rem;">
+              <div class="form-group-admin">
+                <label>Mot de passe actuel</label>
+                <input type="password" id="pwdCurrent" class="form-control-admin" placeholder="••••••••">
+              </div>
+              <div class="form-group-admin">
+                <label>Nouveau mot de passe</label>
+                <input type="password" id="pwdNew" class="form-control-admin" placeholder="••••••••">
+              </div>
+              <div class="form-group-admin">
+                <label>Confirmer le nouveau mot de passe</label>
+                <input type="password" id="pwdConfirm" class="form-control-admin" placeholder="••••••••">
+              </div>
+              <button class="btn-admin primary" onclick="changePassword()">
+                <i class="fa-solid fa-key me-1"></i> Changer le mot de passe
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Infos légales -->
+        <div class="col-lg-6">
+          <div class="table-card">
+            <div class="table-header"><h3><i class="fa-solid fa-file-contract me-2 text-orange"></i>Informations légales</h3></div>
+            <div style="padding:1.5rem;">
+              <div class="form-group-admin">
+                <label>RCCM</label>
+                <input type="text" id="legalRccm" class="form-control-admin" value="GN.TCC.2020.A.00120">
+              </div>
+              <div class="form-group-admin">
+                <label>NIF</label>
+                <input type="text" id="legalNif" class="form-control-admin" value="730274370">
+              </div>
+              <div class="form-group-admin">
+                <label>Année de fondation</label>
+                <input type="number" id="legalYear" class="form-control-admin" value="2020">
+              </div>
+              <button class="btn-admin primary" onclick="saveSettings('legal')">
+                <i class="fa-solid fa-floppy-disk me-1"></i> Sauvegarder
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../assets/js/admin.js"></script>
+<script>
+async function saveSettings(section) {
+  let payload = {};
+
+  if (section === 'general') {
+    payload = {
+      site_name:    document.getElementById('siteName').value.trim(),
+      site_slogan:  document.getElementById('siteSlogan').value.trim(),
+      site_email:   document.getElementById('siteEmail').value.trim(),
+      site_whatsapp:document.getElementById('siteWhatsapp').value.trim(),
+      site_address: document.getElementById('siteAddress').value.trim(),
+    };
+  } else if (section === 'social') {
+    payload = {
+      social_facebook: document.getElementById('socialFacebook').value.trim(),
+      social_instagram:document.getElementById('socialInstagram').value.trim(),
+      social_youtube:  document.getElementById('socialYoutube').value.trim(),
+      social_tiktok:   document.getElementById('socialTiktok').value.trim(),
+    };
+  } else if (section === 'legal') {
+    payload = {
+      legal_rccm: document.getElementById('legalRccm').value.trim(),
+      legal_nif:  document.getElementById('legalNif').value.trim(),
+      legal_year: document.getElementById('legalYear').value,
+    };
+  }
+
+  try {
+    const res = await apiPost('/settings', { section, ...payload });
+    if (res?.success) {
+      showToast('Paramètres sauvegardés.', 'success');
+    } else {
+      showToast(res?.error || 'Erreur lors de la sauvegarde.', 'error');
+    }
+  } catch {
+    showToast('Erreur réseau.', 'error');
+  }
+}
+
+async function changePassword() {
+  const current = document.getElementById('pwdCurrent').value;
+  const newPwd  = document.getElementById('pwdNew').value;
+  const confirm = document.getElementById('pwdConfirm').value;
+
+  if (!current || !newPwd || !confirm) {
+    showToast('Remplissez tous les champs.', 'error'); return;
+  }
+  if (newPwd !== confirm) {
+    showToast('Les mots de passe ne correspondent pas.', 'error'); return;
+  }
+  if (newPwd.length < 8) {
+    showToast('Le nouveau mot de passe doit contenir au moins 8 caractères.', 'error'); return;
+  }
+
+  try {
+    const res = await apiPost('/change-password', { current_password: current, new_password: newPwd });
+    if (res?.success) {
+      showToast('Mot de passe modifié avec succès.', 'success');
+      ['pwdCurrent','pwdNew','pwdConfirm'].forEach(id => document.getElementById(id).value = '');
+    } else {
+      showToast(res?.error || 'Mot de passe actuel incorrect.', 'error');
+    }
+  } catch {
+    showToast('Erreur réseau.', 'error');
+  }
+}
+
+// Load settings from API on init
+async function loadSettings() {
+  try {
+    const data = await apiGet('/settings');
+    if (!data?.settings) return;
+    const s = data.settings;
+    if (s.site_name)      document.getElementById('siteName').value      = s.site_name;
+    if (s.site_slogan)    document.getElementById('siteSlogan').value    = s.site_slogan;
+    if (s.site_email)     document.getElementById('siteEmail').value     = s.site_email;
+    if (s.site_whatsapp)  document.getElementById('siteWhatsapp').value  = s.site_whatsapp;
+    if (s.site_address)   document.getElementById('siteAddress').value   = s.site_address;
+    if (s.social_facebook) document.getElementById('socialFacebook').value = s.social_facebook;
+    if (s.social_instagram) document.getElementById('socialInstagram').value = s.social_instagram;
+    if (s.social_youtube) document.getElementById('socialYoutube').value = s.social_youtube;
+    if (s.social_tiktok)  document.getElementById('socialTiktok').value  = s.social_tiktok;
+    if (s.legal_rccm)     document.getElementById('legalRccm').value     = s.legal_rccm;
+    if (s.legal_nif)      document.getElementById('legalNif').value      = s.legal_nif;
+    if (s.legal_year)     document.getElementById('legalYear').value     = s.legal_year;
+  } catch {}
+}
+
+document.addEventListener('DOMContentLoaded', loadSettings);
+</script>
+</body>
+</html>

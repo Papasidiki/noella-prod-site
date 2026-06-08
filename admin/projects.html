@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projets — Admin NOELLA-PROD</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand" style="padding:1rem 1.25rem;">
+      <img src="https://noella-prod.sanoh5347.workers.dev/assets/logo-D7SCA-cE.png"
+           alt="NOELLA-PROD" style="height:32px;width:auto;">
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a href="projects.html"><i class="fa-solid fa-clapperboard"></i> Projets</a>
+      <a href="messages.html"><i class="fa-solid fa-envelope"></i> Messages</a>
+      <div class="nav-section-label">Contenu</div>
+      <a href="services-admin.html"><i class="fa-solid fa-list"></i> Services</a>
+      <a href="testimonials.html"><i class="fa-solid fa-star"></i> Témoignages</a>
+      <div class="nav-section-label">Système</div>
+      <a href="settings.html"><i class="fa-solid fa-gear"></i> Paramètres</a>
+      <a href="../public/index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Voir le site</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="user-info">
+          <strong id="sidebarUsername">Admin</strong>
+          <small>Administrateur</small>
+        </div>
+      </div>
+      <button class="btn-logout" data-action="logout">
+        <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-title">
+        <i class="fa-solid fa-clapperboard text-orange me-2"></i>Gestion des projets
+      </div>
+      <div class="topbar-right">
+        <button class="btn-admin primary" id="btnNewProject">
+          <i class="fa-solid fa-plus"></i> Nouveau projet
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <!-- Search + Filter -->
+      <div class="search-bar">
+        <input type="search" class="search-input" id="searchInput" placeholder="Rechercher un projet…">
+        <select class="search-input" id="filterCat" style="max-width:180px;">
+          <option value="">Toutes catégories</option>
+          <option value="clip">Clips Musicaux</option>
+          <option value="cinema">Cinéma</option>
+          <option value="mariage">Mariages</option>
+          <option value="pub">Publicité</option>
+          <option value="documentaire">Documentaires</option>
+        </select>
+        <select class="search-input" id="filterStatus" style="max-width:150px;">
+          <option value="">Tous statuts</option>
+          <option value="published">Publiés</option>
+          <option value="draft">Brouillons</option>
+        </select>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Tous les projets</h3>
+          <span id="projectCount" class="text-dim" style="font-size:.82rem;"></span>
+        </div>
+        <div id="projectsTableWrap">
+          <div class="spinner-admin"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal Nouveau / Édition -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3 id="modalTitle">Nouveau projet</h3>
+      <button onclick="closeModal('projectModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-box-body">
+      <input type="hidden" id="projectId">
+      <div class="row g-3">
+        <div class="col-12">
+          <div class="form-group-admin">
+            <label>Titre *</label>
+            <input type="text" id="pTitle" class="form-control-admin" placeholder="Titre du projet" maxlength="200">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group-admin">
+            <label>Catégorie *</label>
+            <select id="pCategory" class="form-control-admin">
+              <option value="">-- Choisir --</option>
+              <option value="clip">Clip Musical</option>
+              <option value="cinema">Cinéma / Fiction</option>
+              <option value="mariage">Mariage / Événement</option>
+              <option value="pub">Publicité</option>
+              <option value="documentaire">Documentaire</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group-admin">
+            <label>Statut</label>
+            <select id="pStatus" class="form-control-admin">
+              <option value="draft">Brouillon</option>
+              <option value="published">Publié</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="form-group-admin">
+            <label>Description</label>
+            <textarea id="pDescription" class="form-control-admin" placeholder="Description du projet…" maxlength="2000"></textarea>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="form-group-admin">
+            <label>URL Image de couverture</label>
+            <input type="url" id="pImage" class="form-control-admin" placeholder="https://…">
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="form-group-admin">
+            <label>URL Vidéo (YouTube embed ou MP4)</label>
+            <input type="url" id="pVideo" class="form-control-admin" placeholder="https://www.youtube.com/embed/…">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn-admin secondary" onclick="closeModal('projectModal')">Annuler</button>
+      <button class="btn-admin primary" id="saveProjectBtn" onclick="saveProject()">
+        <i class="fa-solid fa-floppy-disk me-1"></i> Enregistrer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmation suppression -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-box-header">
+      <h3>Confirmer la suppression</h3>
+      <button onclick="closeModal('deleteModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-box-body">
+      <p class="text-dim">Cette action est irréversible. Voulez-vous vraiment supprimer ce projet ?</p>
+      <p style="margin-top:.75rem;color:var(--blanc);font-weight:500;" id="deleteProjectTitle"></p>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn-admin secondary" onclick="closeModal('deleteModal')">Annuler</button>
+      <button class="btn-admin danger" id="confirmDeleteBtn">
+        <i class="fa-solid fa-trash me-1"></i> Supprimer
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/admin.js"></script>
+<script>
+let allProjects = [];
+let deleteTargetId = null;
+
+async function loadProjects() {
+  const wrap = document.getElementById('projectsTableWrap');
+  wrap.innerHTML = '<div class="spinner-admin"></div>';
+  try {
+    const data = await apiGet('/projects/all');
+    allProjects = data?.projects || [];
+    renderTable(allProjects);
+  } catch {
+    wrap.innerHTML = '<p class="text-dim text-center" style="padding:2rem;">Erreur de chargement.</p>';
+  }
+}
+
+function renderTable(projects) {
+  const wrap  = document.getElementById('projectsTableWrap');
+  const count = document.getElementById('projectCount');
+  count.textContent = `${projects.length} projet(s)`;
+
+  if (!projects.length) {
+    wrap.innerHTML = `<p class="text-dim text-center" style="padding:2.5rem;">Aucun projet trouvé.</p>`;
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table class="admin-table">
+      <thead><tr>
+        <th>Titre</th>
+        <th>Catégorie</th>
+        <th>Statut</th>
+        <th>Créé le</th>
+        <th>Actions</th>
+      </tr></thead>
+      <tbody>
+        ${projects.map(p => `
+          <tr>
+            <td><strong>${escHtml(p.title)}</strong></td>
+            <td>${escHtml(p.category || '—')}</td>
+            <td>
+              <span class="badge-admin ${p.status === 'published' ? 'published' : 'draft'}">
+                ${p.status === 'published' ? 'Publié' : 'Brouillon'}
+              </span>
+            </td>
+            <td>${fmtDate(p.created_at)}</td>
+            <td>
+              <button class="btn-action edit"   onclick="editProject(${p.id})" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-action ${p.status === 'published' ? 'view' : 'approve'}" onclick="toggleStatus(${p.id})" title="${p.status === 'published' ? 'Dépublier' : 'Publier'}">
+                <i class="fa-solid fa-${p.status === 'published' ? 'eye-slash' : 'eye'}"></i>
+              </button>
+              <button class="btn-action delete" onclick="promptDelete(${p.id}, '${escHtml(p.title)}')" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+// Open modal for new project
+document.getElementById('btnNewProject').addEventListener('click', () => {
+  document.getElementById('modalTitle').textContent = 'Nouveau projet';
+  document.getElementById('projectId').value = '';
+  ['pTitle','pDescription','pImage','pVideo'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pCategory').value = '';
+  document.getElementById('pStatus').value = 'draft';
+  openModal('projectModal');
+});
+
+// Open modal for edit
+function editProject(id) {
+  const p = allProjects.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('modalTitle').textContent  = 'Modifier le projet';
+  document.getElementById('projectId').value          = p.id;
+  document.getElementById('pTitle').value             = p.title || '';
+  document.getElementById('pCategory').value          = p.category || '';
+  document.getElementById('pStatus').value            = p.status || 'draft';
+  document.getElementById('pDescription').value       = p.description || '';
+  document.getElementById('pImage').value             = p.image || '';
+  document.getElementById('pVideo').value             = p.video_url || '';
+  openModal('projectModal');
+}
+
+// Save (create or update)
+async function saveProject() {
+  const id    = document.getElementById('projectId').value;
+  const title = document.getElementById('pTitle').value.trim();
+  const cat   = document.getElementById('pCategory').value;
+
+  if (!title) { showToast('Le titre est obligatoire.', 'error'); return; }
+  if (!cat)   { showToast('Veuillez choisir une catégorie.', 'error'); return; }
+
+  const payload = {
+    title,
+    category:    cat,
+    status:      document.getElementById('pStatus').value,
+    description: document.getElementById('pDescription').value.trim(),
+    image:       document.getElementById('pImage').value.trim(),
+    video_url:   document.getElementById('pVideo').value.trim(),
+  };
+
+  const btn = document.getElementById('saveProjectBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Enregistrement…';
+
+  try {
+    let res;
+    if (id) {
+      res = await apiPut(`/projects/${id}`, payload);
+    } else {
+      res = await apiPost('/projects', payload);
+    }
+
+    if (res?.success || res?.project) {
+      closeModal('projectModal');
+      showToast(id ? 'Projet mis à jour.' : 'Projet créé avec succès.', 'success');
+      await loadProjects();
+    } else {
+      showToast(res?.error || 'Erreur lors de l\'enregistrement.', 'error');
+    }
+  } catch {
+    showToast('Erreur réseau.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-floppy-disk me-1"></i> Enregistrer';
+  }
+}
+
+// Toggle published/draft
+async function toggleStatus(id) {
+  const p = allProjects.find(x => x.id === id);
+  if (!p) return;
+  const newStatus = p.status === 'published' ? 'draft' : 'published';
+  const res = await apiPut(`/projects/${id}`, { ...p, status: newStatus });
+  if (res?.success || res?.project) {
+    showToast(`Projet ${newStatus === 'published' ? 'publié' : 'dépublié'}.`, 'success');
+    await loadProjects();
+  } else {
+    showToast('Erreur lors du changement de statut.', 'error');
+  }
+}
+
+// Delete
+function promptDelete(id, title) {
+  deleteTargetId = id;
+  document.getElementById('deleteProjectTitle').textContent = title;
+  openModal('deleteModal');
+}
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+  if (!deleteTargetId) return;
+  const btn = document.getElementById('confirmDeleteBtn');
+  btn.disabled = true;
+  try {
+    const res = await apiDelete(`/projects/${deleteTargetId}`);
+    if (res?.success) {
+      closeModal('deleteModal');
+      showToast('Projet supprimé.', 'success');
+      await loadProjects();
+    } else {
+      showToast(res?.error || 'Erreur lors de la suppression.', 'error');
+    }
+  } catch {
+    showToast('Erreur réseau.', 'error');
+  } finally {
+    btn.disabled = false;
+    deleteTargetId = null;
+  }
+});
+
+// Search + Filter
+function applyFilters() {
+  const q   = document.getElementById('searchInput').value.toLowerCase();
+  const cat = document.getElementById('filterCat').value;
+  const sts = document.getElementById('filterStatus').value;
+
+  const filtered = allProjects.filter(p => {
+    const matchQ   = !q   || p.title.toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q);
+    const matchCat = !cat || p.category === cat;
+    const matchSts = !sts || p.status === sts;
+    return matchQ && matchCat && matchSts;
+  });
+  renderTable(filtered);
+}
+
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('filterCat').addEventListener('change', applyFilters);
+document.getElementById('filterStatus').addEventListener('change', applyFilters);
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  loadProjects();
+  // Auto-open new modal if ?new=1
+  if (new URLSearchParams(location.search).get('new') === '1') {
+    setTimeout(() => document.getElementById('btnNewProject').click(), 300);
+  }
+});
+</script>
+</body>
+</html>

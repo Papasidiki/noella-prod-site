@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages — Admin NOELLA-PROD</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand" style="padding:1rem 1.25rem;">
+      <img src="https://noella-prod.sanoh5347.workers.dev/assets/logo-D7SCA-cE.png"
+           alt="NOELLA-PROD" style="height:32px;width:auto;">
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a href="projects.html"><i class="fa-solid fa-clapperboard"></i> Projets</a>
+      <a href="messages.html"><i class="fa-solid fa-envelope"></i> Messages</a>
+      <div class="nav-section-label">Contenu</div>
+      <a href="services-admin.html"><i class="fa-solid fa-list"></i> Services</a>
+      <a href="testimonials.html"><i class="fa-solid fa-star"></i> Témoignages</a>
+      <div class="nav-section-label">Système</div>
+      <a href="settings.html"><i class="fa-solid fa-gear"></i> Paramètres</a>
+      <a href="../public/index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Voir le site</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="user-info">
+          <strong id="sidebarUsername">Admin</strong>
+          <small>Administrateur</small>
+        </div>
+      </div>
+      <button class="btn-logout" data-action="logout">
+        <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+      </button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-title">
+        <i class="fa-solid fa-envelope text-orange me-2"></i>Messages clients
+      </div>
+      <div class="topbar-right">
+        <button class="btn-topbar" onclick="loadMessages()">
+          <i class="fa-solid fa-rotate-right"></i> Actualiser
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="search-bar">
+        <input type="search" class="search-input" id="searchInput" placeholder="Rechercher un message…">
+        <select class="search-input" id="filterStatus" style="max-width:160px;">
+          <option value="">Tous</option>
+          <option value="unread">Non lus</option>
+          <option value="read">Lus</option>
+        </select>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Boîte de réception</h3>
+          <span id="msgCount" class="text-dim" style="font-size:.82rem;"></span>
+        </div>
+        <div id="messagesTableWrap">
+          <div class="spinner-admin"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal détail message -->
+<div class="modal-overlay" id="msgModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3>Détail du message</h3>
+      <button onclick="closeModal('msgModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-box-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <div class="text-dim" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;">Expéditeur</div>
+          <strong id="msgName" style="color:var(--blanc);font-size:.95rem;"></strong>
+        </div>
+        <div>
+          <div class="text-dim" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;">Email</div>
+          <a id="msgEmail" href="#" style="color:var(--orange);font-size:.9rem;"></a>
+        </div>
+        <div>
+          <div class="text-dim" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;">Téléphone</div>
+          <span id="msgPhone" style="color:var(--blanc);font-size:.9rem;"></span>
+        </div>
+        <div>
+          <div class="text-dim" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;">Sujet</div>
+          <span id="msgSubject" style="color:var(--blanc);font-size:.9rem;"></span>
+        </div>
+        <div>
+          <div class="text-dim" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;">Date</div>
+          <span id="msgDate" style="color:var(--blanc);font-size:.9rem;"></span>
+        </div>
+      </div>
+      <div>
+        <div class="text-dim" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">Message</div>
+        <div id="msgBody" style="background:var(--noir-3);border-radius:var(--radius);padding:1.25rem;color:var(--blanc-dim);font-size:.9rem;line-height:1.8;white-space:pre-wrap;"></div>
+      </div>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn-admin danger" id="btnDeleteMsg">
+        <i class="fa-solid fa-trash me-1"></i> Supprimer
+      </button>
+      <a id="btnReplyEmail" href="#" class="btn-admin primary">
+        <i class="fa-solid fa-reply me-1"></i> Répondre par email
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/admin.js"></script>
+<script>
+let allMessages = [];
+let viewingId   = null;
+
+async function loadMessages() {
+  const wrap = document.getElementById('messagesTableWrap');
+  wrap.innerHTML = '<div class="spinner-admin"></div>';
+  try {
+    const data = await apiGet('/messages');
+    allMessages = data?.messages || [];
+    renderMessages(allMessages);
+  } catch {
+    wrap.innerHTML = '<p class="text-dim text-center" style="padding:2rem;">Erreur de chargement.</p>';
+  }
+}
+
+function renderMessages(messages) {
+  const wrap  = document.getElementById('messagesTableWrap');
+  const count = document.getElementById('msgCount');
+  count.textContent = `${messages.length} message(s)`;
+
+  if (!messages.length) {
+    wrap.innerHTML = `<p class="text-dim text-center" style="padding:2.5rem;">Aucun message.</p>`;
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table class="admin-table">
+      <thead><tr>
+        <th>Expéditeur</th>
+        <th>Sujet</th>
+        <th>Date</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr></thead>
+      <tbody>
+        ${messages.map(m => `
+          <tr style="${m.status === 'unread' ? 'background:rgba(59,130,246,.04);' : ''}">
+            <td>
+              <strong style="${m.status === 'unread' ? 'color:var(--blanc)' : ''}">${escHtml(m.name)}</strong><br>
+              <span style="font-size:.78rem;color:var(--blanc-dim);">${escHtml(m.email)}</span>
+            </td>
+            <td>${escHtml(m.subject || '—')}</td>
+            <td style="white-space:nowrap;font-size:.82rem;">${fmtDate(m.created_at)}</td>
+            <td><span class="badge-admin ${m.status === 'unread' ? 'unread' : 'read'}">${m.status === 'unread' ? 'Non lu' : 'Lu'}</span></td>
+            <td>
+              <button class="btn-action view"   onclick="viewMessage(${m.id})" title="Voir"><i class="fa-solid fa-eye"></i></button>
+              ${m.status === 'unread'
+                ? `<button class="btn-action approve" onclick="markRead(${m.id})" title="Marquer lu"><i class="fa-solid fa-check"></i></button>`
+                : ''}
+              <button class="btn-action delete" onclick="deleteMessage(${m.id})" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+function viewMessage(id) {
+  const m = allMessages.find(x => x.id === id);
+  if (!m) return;
+  viewingId = id;
+
+  document.getElementById('msgName').textContent    = m.name;
+  document.getElementById('msgEmail').textContent   = m.email;
+  document.getElementById('msgEmail').href          = `mailto:${m.email}`;
+  document.getElementById('msgPhone').textContent   = m.phone || '—';
+  document.getElementById('msgSubject').textContent = m.subject || '—';
+  document.getElementById('msgDate').textContent    = fmtDate(m.created_at);
+  document.getElementById('msgBody').textContent    = m.message;
+  document.getElementById('btnReplyEmail').href     = `mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject || 'Votre message')}`;
+
+  openModal('msgModal');
+
+  // Auto-mark as read
+  if (m.status === 'unread') markRead(id, true);
+}
+
+async function markRead(id, silent = false) {
+  const res = await apiPut(`/messages/${id}/read`, {});
+  if (res?.success) {
+    const msg = allMessages.find(x => x.id === id);
+    if (msg) msg.status = 'read';
+    if (!silent) showToast('Message marqué comme lu.', 'success');
+    renderMessages(applyCurrentFilters());
+  }
+}
+
+async function deleteMessage(id) {
+  if (!confirm('Supprimer ce message définitivement ?')) return;
+  const res = await apiDelete(`/messages/${id}`);
+  if (res?.success) {
+    allMessages = allMessages.filter(x => x.id !== id);
+    closeModal('msgModal');
+    showToast('Message supprimé.', 'success');
+    renderMessages(applyCurrentFilters());
+  } else {
+    showToast('Erreur lors de la suppression.', 'error');
+  }
+}
+
+document.getElementById('btnDeleteMsg').addEventListener('click', () => {
+  if (viewingId) deleteMessage(viewingId);
+});
+
+function applyCurrentFilters() {
+  const q   = document.getElementById('searchInput').value.toLowerCase();
+  const sts = document.getElementById('filterStatus').value;
+  return allMessages.filter(m => {
+    const matchQ   = !q   || m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q) || (m.message || '').toLowerCase().includes(q);
+    const matchSts = !sts || m.status === sts;
+    return matchQ && matchSts;
+  });
+}
+
+document.getElementById('searchInput').addEventListener('input', () => renderMessages(applyCurrentFilters()));
+document.getElementById('filterStatus').addEventListener('change', () => renderMessages(applyCurrentFilters()));
+
+document.addEventListener('DOMContentLoaded', loadMessages);
+</script>
+</body>
+</html>

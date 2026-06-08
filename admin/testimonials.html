@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Témoignages — Admin NOELLA-PROD</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand" style="padding:1rem 1.25rem;">
+      <img src="https://noella-prod.sanoh5347.workers.dev/assets/logo-D7SCA-cE.png"
+           alt="NOELLA-PROD" style="height:32px;width:auto;">
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a href="projects.html"><i class="fa-solid fa-clapperboard"></i> Projets</a>
+      <a href="messages.html"><i class="fa-solid fa-envelope"></i> Messages</a>
+      <div class="nav-section-label">Contenu</div>
+      <a href="services-admin.html"><i class="fa-solid fa-list"></i> Services</a>
+      <a href="testimonials.html"><i class="fa-solid fa-star"></i> Témoignages</a>
+      <div class="nav-section-label">Système</div>
+      <a href="settings.html"><i class="fa-solid fa-gear"></i> Paramètres</a>
+      <a href="../public/index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Voir le site</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="user-info"><strong id="sidebarUsername">Admin</strong><small>Administrateur</small></div>
+      </div>
+      <button class="btn-logout" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-title"><i class="fa-solid fa-star text-orange me-2"></i>Témoignages clients</div>
+      <div class="topbar-right">
+        <button class="btn-admin primary" id="btnNew"><i class="fa-solid fa-plus"></i> Nouveau</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Tous les témoignages</h3>
+          <span id="testCount" class="text-dim" style="font-size:.82rem;"></span>
+        </div>
+        <div id="testTableWrap"><div class="spinner-admin"></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="testModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3 id="testModalTitle">Nouveau témoignage</h3>
+      <button onclick="closeModal('testModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-box-body">
+      <input type="hidden" id="testId">
+      <div class="form-group-admin">
+        <label>Nom *</label>
+        <input type="text" id="tName" class="form-control-admin" placeholder="Nom du client" maxlength="100">
+      </div>
+      <div class="form-group-admin">
+        <label>Rôle / Entreprise</label>
+        <input type="text" id="tRole" class="form-control-admin" placeholder="Ex: Artiste Musicien, Conakry" maxlength="100">
+      </div>
+      <div class="form-group-admin">
+        <label>Témoignage *</label>
+        <textarea id="tMessage" class="form-control-admin" placeholder="Contenu du témoignage…" maxlength="1000"></textarea>
+      </div>
+      <div class="form-group-admin">
+        <label>Statut</label>
+        <select id="tApproved" class="form-control-admin">
+          <option value="0">En attente</option>
+          <option value="1">Approuvé</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn-admin secondary" onclick="closeModal('testModal')">Annuler</button>
+      <button class="btn-admin primary" onclick="saveTestimonial()"><i class="fa-solid fa-floppy-disk me-1"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/admin.js"></script>
+<script>
+let allTestimonials = [];
+
+async function loadTestimonials() {
+  const wrap = document.getElementById('testTableWrap');
+  wrap.innerHTML = '<div class="spinner-admin"></div>';
+  const data = await apiGet('/testimonials/all');
+  allTestimonials = data?.testimonials || [];
+  renderTestimonials();
+}
+
+function renderTestimonials() {
+  const wrap = document.getElementById('testTableWrap');
+  document.getElementById('testCount').textContent = `${allTestimonials.length} témoignage(s)`;
+
+  if (!allTestimonials.length) {
+    wrap.innerHTML = `<p class="text-dim text-center" style="padding:2rem;">Aucun témoignage.</p>`;
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table class="admin-table">
+      <thead><tr><th>Nom</th><th>Rôle</th><th>Extrait</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>
+        ${allTestimonials.map(t => `
+          <tr>
+            <td><strong>${escHtml(t.name)}</strong></td>
+            <td class="text-dim">${escHtml(t.role || '—')}</td>
+            <td class="text-dim" style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(t.message)}</td>
+            <td><span class="badge-admin ${t.approved ? 'approved' : 'pending'}">${t.approved ? 'Approuvé' : 'En attente'}</span></td>
+            <td>
+              <button class="btn-action edit" onclick="editTest(${t.id})" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-action ${t.approved ? 'view' : 'approve'}" onclick="toggleApprove(${t.id})" title="${t.approved ? 'Désapprouver' : 'Approuver'}">
+                <i class="fa-solid fa-${t.approved ? 'ban' : 'check'}"></i>
+              </button>
+              <button class="btn-action delete" onclick="deleteTest(${t.id})" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+document.getElementById('btnNew').addEventListener('click', () => {
+  document.getElementById('testModalTitle').textContent = 'Nouveau témoignage';
+  document.getElementById('testId').value = '';
+  ['tName','tRole','tMessage'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('tApproved').value = '0';
+  openModal('testModal');
+});
+
+function editTest(id) {
+  const t = allTestimonials.find(x => x.id === id);
+  if (!t) return;
+  document.getElementById('testModalTitle').textContent = 'Modifier le témoignage';
+  document.getElementById('testId').value     = t.id;
+  document.getElementById('tName').value      = t.name;
+  document.getElementById('tRole').value      = t.role || '';
+  document.getElementById('tMessage').value   = t.message;
+  document.getElementById('tApproved').value  = t.approved ? '1' : '0';
+  openModal('testModal');
+}
+
+async function saveTestimonial() {
+  const id   = document.getElementById('testId').value;
+  const name = document.getElementById('tName').value.trim();
+  const msg  = document.getElementById('tMessage').value.trim();
+  if (!name || !msg) { showToast('Nom et message sont obligatoires.', 'error'); return; }
+
+  const payload = {
+    name, message: msg,
+    role:     document.getElementById('tRole').value.trim(),
+    approved: document.getElementById('tApproved').value === '1' ? 1 : 0,
+  };
+
+  let res;
+  if (id) {
+    res = await apiPut(`/testimonials/${id}`, payload);
+  } else {
+    res = await apiPost('/testimonials', payload);
+  }
+
+  if (res?.success || res?.testimonial) {
+    closeModal('testModal');
+    showToast(id ? 'Témoignage mis à jour.' : 'Témoignage ajouté.', 'success');
+    await loadTestimonials();
+  } else {
+    showToast(res?.error || 'Erreur.', 'error');
+  }
+}
+
+async function toggleApprove(id) {
+  const t      = allTestimonials.find(x => x.id === id);
+  if (!t) return;
+  const newVal = t.approved ? 0 : 1;
+  const res    = await apiPut(`/testimonials/${id}`, { ...t, approved: newVal });
+  if (res?.success || res?.testimonial) {
+    showToast(newVal ? 'Témoignage approuvé.' : 'Témoignage désapprouvé.', 'success');
+    await loadTestimonials();
+  }
+}
+
+async function deleteTest(id) {
+  if (!confirm('Supprimer ce témoignage ?')) return;
+  const res = await apiDelete(`/testimonials/${id}`);
+  if (res?.success) {
+    showToast('Témoignage supprimé.', 'success');
+    await loadTestimonials();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadTestimonials);
+</script>
+</body>
+</html>

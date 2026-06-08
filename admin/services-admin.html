@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services — Admin NOELLA-PROD</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand" style="padding:1rem 1.25rem;">
+      <img src="https://noella-prod.sanoh5347.workers.dev/assets/logo-D7SCA-cE.png"
+           alt="NOELLA-PROD" style="height:32px;width:auto;">
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a href="projects.html"><i class="fa-solid fa-clapperboard"></i> Projets</a>
+      <a href="messages.html"><i class="fa-solid fa-envelope"></i> Messages</a>
+      <div class="nav-section-label">Contenu</div>
+      <a href="services-admin.html"><i class="fa-solid fa-list"></i> Services</a>
+      <a href="testimonials.html"><i class="fa-solid fa-star"></i> Témoignages</a>
+      <div class="nav-section-label">Système</div>
+      <a href="settings.html"><i class="fa-solid fa-gear"></i> Paramètres</a>
+      <a href="../public/index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Voir le site</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="user-info"><strong id="sidebarUsername">Admin</strong><small>Administrateur</small></div>
+      </div>
+      <button class="btn-logout" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-title"><i class="fa-solid fa-list text-orange me-2"></i>Gestion des services</div>
+      <div class="topbar-right">
+        <button class="btn-admin primary" id="btnNew"><i class="fa-solid fa-plus"></i> Nouveau service</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Services du site</h3>
+          <small class="text-dim">Ces services s'affichent sur la page d'accueil et la page Services.</small>
+        </div>
+        <div id="servicesWrap"><div class="spinner-admin"></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="svcModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3 id="svcModalTitle">Nouveau service</h3>
+      <button onclick="closeModal('svcModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-box-body">
+      <input type="hidden" id="svcId">
+      <div class="form-group-admin">
+        <label>Titre *</label>
+        <input type="text" id="svcTitle" class="form-control-admin" placeholder="Titre du service" maxlength="100">
+      </div>
+      <div class="form-group-admin">
+        <label>Description</label>
+        <textarea id="svcDesc" class="form-control-admin" placeholder="Description courte…" maxlength="500"></textarea>
+      </div>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <div class="form-group-admin">
+            <label>Icône Font Awesome</label>
+            <input type="text" id="svcIcon" class="form-control-admin" placeholder="fa-clapperboard">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group-admin">
+            <label>Ordre d'affichage</label>
+            <input type="number" id="svcOrder" class="form-control-admin" value="0" min="0">
+          </div>
+        </div>
+      </div>
+      <div class="form-group-admin">
+        <label>Statut</label>
+        <select id="svcActive" class="form-control-admin">
+          <option value="1">Actif</option>
+          <option value="0">Inactif</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn-admin secondary" onclick="closeModal('svcModal')">Annuler</button>
+      <button class="btn-admin primary" onclick="saveService()"><i class="fa-solid fa-floppy-disk me-1"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/admin.js"></script>
+<script>
+let allServices = [];
+
+async function loadServices() {
+  const wrap = document.getElementById('servicesWrap');
+  wrap.innerHTML = '<div class="spinner-admin"></div>';
+  // Services are read from DB via settings or a dedicated endpoint
+  // For now we render a management table
+  wrap.innerHTML = `
+    <div style="padding:1.5rem;">
+      <p class="text-dim" style="font-size:.88rem;margin-bottom:1.5rem;">
+        <i class="fa-solid fa-circle-info text-orange me-2"></i>
+        Les services sont définis dans <code>db/schema.sql</code> et gérables ici.
+        L'API <code>/api/services</code> est extensible dans le Worker.
+      </p>
+      <table class="admin-table">
+        <thead><tr><th>Icône</th><th>Titre</th><th>Description</th><th>Ordre</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><i class="fa-solid fa-clapperboard text-orange"></i></td>
+            <td><strong>Cinéma & Fiction</strong></td>
+            <td class="text-dim">Production de films, courts-métrages et séries.</td>
+            <td>1</td>
+            <td><span class="badge-admin approved">Actif</span></td>
+            <td>
+              <button class="btn-action edit" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-action delete" title="Désactiver"><i class="fa-solid fa-eye-slash"></i></button>
+            </td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-music text-orange"></i></td>
+            <td><strong>Musique & Spectacles</strong></td>
+            <td class="text-dim">Production musicale et organisation de concerts.</td>
+            <td>2</td>
+            <td><span class="badge-admin approved">Actif</span></td>
+            <td>
+              <button class="btn-action edit" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-action delete" title="Désactiver"><i class="fa-solid fa-eye-slash"></i></button>
+            </td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-film text-orange"></i></td>
+            <td><strong>Distribution</strong></td>
+            <td class="text-dim">Distribution en salles, streaming et importation.</td>
+            <td>3</td>
+            <td><span class="badge-admin approved">Actif</span></td>
+            <td>
+              <button class="btn-action edit" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-action delete" title="Désactiver"><i class="fa-solid fa-eye-slash"></i></button>
+            </td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-tv text-orange"></i></td>
+            <td><strong>Publicité & Clips</strong></td>
+            <td class="text-dim">Films publicitaires et clips musicaux.</td>
+            <td>4</td>
+            <td><span class="badge-admin approved">Actif</span></td>
+            <td>
+              <button class="btn-action edit" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-action delete" title="Désactiver"><i class="fa-solid fa-eye-slash"></i></button>
+            </td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-satellite-dish text-orange"></i></td>
+            <td><strong>Média & Digital</strong></td>
+            <td class="text-dim">Chaîne TV Web et programmes culturels.</td>
+            <td>5</td>
+            <td><span class="badge-admin approved">Actif</span></td>
+            <td>
+              <button class="btn-action edit" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-action delete" title="Désactiver"><i class="fa-solid fa-eye-slash"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>`;
+}
+
+document.getElementById('btnNew').addEventListener('click', () => {
+  document.getElementById('svcModalTitle').textContent = 'Nouveau service';
+  document.getElementById('svcId').value = '';
+  ['svcTitle','svcDesc','svcIcon'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('svcOrder').value  = '0';
+  document.getElementById('svcActive').value = '1';
+  openModal('svcModal');
+});
+
+async function saveService() {
+  const title = document.getElementById('svcTitle').value.trim();
+  if (!title) { showToast('Le titre est obligatoire.', 'error'); return; }
+  showToast('Service enregistré. (Connectez l\'API /api/services pour la persistance)', 'success');
+  closeModal('svcModal');
+}
+
+document.addEventListener('DOMContentLoaded', loadServices);
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration — NOELLA-PROD</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-box">
+    <div class="brand">
+      <img src="https://noella-prod.sanoh5347.workers.dev/assets/logo-D7SCA-cE.png"
+           alt="NOELLA-PROD" style="height:52px;width:auto;margin-bottom:1rem;">
+      <p>Espace Administration</p>
+    </div>
+
+    <div class="login-error" id="loginError">
+      <i class="fa-solid fa-circle-exclamation me-2"></i>
+      <span id="loginErrorMsg">Identifiants incorrects.</span>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group-admin">
+        <label for="username">Nom d'utilisateur</label>
+        <input type="text" id="username" class="form-control-admin" placeholder="admin" autocomplete="username" required>
+      </div>
+      <div class="form-group-admin" style="position:relative;">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" class="form-control-admin" placeholder="••••••••" autocomplete="current-password" required>
+        <button type="button" id="togglePwd" style="position:absolute;right:.9rem;bottom:.75rem;background:none;border:none;color:var(--blanc-dim);cursor:pointer;font-size:.9rem;">
+          <i class="fa-solid fa-eye" id="eyeIcon"></i>
+        </button>
+      </div>
+      <button type="submit" class="btn-login" id="loginBtn">
+        <i class="fa-solid fa-right-to-bracket me-2"></i>Se connecter
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:.78rem;color:var(--blanc-dim);">
+      <a href="../public/index.html" style="color:var(--orange);">← Retour au site</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  // Rediriger si déjà connecté
+  if (localStorage.getItem('np_token')) {
+    window.location.href = 'dashboard.html';
+  }
+
+  const form       = document.getElementById('loginForm');
+  const errorBox   = document.getElementById('loginError');
+  const errorMsg   = document.getElementById('loginErrorMsg');
+  const loginBtn   = document.getElementById('loginBtn');
+  const togglePwd  = document.getElementById('togglePwd');
+  const pwdInput   = document.getElementById('password');
+  const eyeIcon    = document.getElementById('eyeIcon');
+
+  // Toggle password visibility
+  togglePwd.addEventListener('click', () => {
+    const show = pwdInput.type === 'password';
+    pwdInput.type = show ? 'text' : 'password';
+    eyeIcon.className = show ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.classList.remove('show');
+
+    const username = document.getElementById('username').value.trim();
+    const password = pwdInput.value;
+
+    if (!username || !password) {
+      errorMsg.textContent = 'Veuillez remplir tous les champs.';
+      errorBox.classList.add('show');
+      return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Connexion…';
+
+    try {
+      const res  = await fetch('/api/login', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        localStorage.setItem('np_token', data.token);
+        localStorage.setItem('np_user', JSON.stringify({ username: data.username }));
+        window.location.href = 'dashboard.html';
+      } else {
+        errorMsg.textContent = data.error || 'Identifiants incorrects.';
+        errorBox.classList.add('show');
+      }
+    } catch {
+      errorMsg.textContent = 'Erreur réseau. Vérifiez votre connexion.';
+      errorBox.classList.add('show');
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i>Se connecter';
+    }
+  });
+</script>
+</body>
+</html>

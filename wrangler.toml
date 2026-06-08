@@ -1,0 +1,43 @@
+name = "noella-prod"
+main = "worker/index.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ── Pages (Frontend) ──────────────────────────────────────────
+# Déployer le frontend via Cloudflare Pages
+# Le worker gère les routes /api/*
+# Les fichiers statiques sont servis depuis public/ et admin/
+
+# ── D1 Database ───────────────────────────────────────────────
+[[d1_databases]]
+binding      = "DB"
+database_name = "noella-prod-db"
+database_id  = "efac7a94-b3c5-46d7-92f6-8fe7dd797f15"
+# Pour créer la DB: wrangler d1 create noella-prod-db
+
+# ── KV Namespace (Rate Limiting) ──────────────────────────────
+[[kv_namespaces]]
+binding = "NP_KV"
+id      = "97b9b892e0c54de7b823d584e27a5443"
+# Pour créer: wrangler kv:namespace create NP_KV
+
+# ── Environment Variables ─────────────────────────────────────
+[vars]
+ENVIRONMENT = "production"
+
+# ── Secrets (à définir via CLI ou Dashboard) ──────────────────
+# wrangler secret put JWT_SECRET
+# → entrer une chaîne aléatoire longue (ex: openssl rand -hex 32)
+
+# ── Routes ───────────────────────────────────────────────────
+# Le worker intercepte toutes les requêtes /api/*
+# Les autres routes sont servies par Cloudflare Pages (ASSETS)
+
+# ── Assets (Pages) ───────────────────────────────────────────
+[site]
+bucket = "./"
+
+# ── Dev Config ───────────────────────────────────────────────
+[dev]
+port = 8787
+local_protocol = "http"

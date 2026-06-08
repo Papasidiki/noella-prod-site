@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Admin NOELLA-PROD</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand" style="padding:1rem 1.25rem;">
+      <img src="https://noella-prod.sanoh5347.workers.dev/assets/logo-D7SCA-cE.png"
+           alt="NOELLA-PROD" style="height:32px;width:auto;">
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a href="projects.html"><i class="fa-solid fa-clapperboard"></i> Projets</a>
+      <a href="messages.html"><i class="fa-solid fa-envelope"></i> Messages <span id="unreadBadge" style="background:var(--orange);color:#fff;font-size:.65rem;padding:.1rem .45rem;border-radius:10px;margin-left:auto;"></span></a>
+      <div class="nav-section-label">Contenu</div>
+      <a href="services-admin.html"><i class="fa-solid fa-list"></i> Services</a>
+      <a href="testimonials.html"><i class="fa-solid fa-star"></i> Témoignages</a>
+      <div class="nav-section-label">Système</div>
+      <a href="settings.html"><i class="fa-solid fa-gear"></i> Paramètres</a>
+      <a href="../public/index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Voir le site</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="user-info">
+          <strong id="sidebarUsername">Admin</strong>
+          <small>Administrateur</small>
+        </div>
+      </div>
+      <button class="btn-logout" data-action="logout">
+        <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-title">
+        <i class="fa-solid fa-gauge text-orange me-2"></i>Dashboard
+      </div>
+      <div class="topbar-right">
+        <span id="currentDate" style="font-size:.82rem;color:var(--blanc-dim);"></span>
+        <button class="btn-topbar" onclick="location.reload()">
+          <i class="fa-solid fa-rotate-right"></i> Actualiser
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- Stats -->
+      <div class="row g-3 mb-4" id="statsRow">
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-clapperboard"></i></div>
+            <div>
+              <div class="stat-val" id="statProjects">—</div>
+              <div class="stat-lbl">Projets publiés</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon info"><i class="fa-solid fa-envelope"></i></div>
+            <div>
+              <div class="stat-val" id="statMessages">—</div>
+              <div class="stat-lbl">Messages reçus</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon warning"><i class="fa-solid fa-envelope-open"></i></div>
+            <div>
+              <div class="stat-val" id="statUnread">—</div>
+              <div class="stat-lbl">Non lus</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon success"><i class="fa-solid fa-star"></i></div>
+            <div>
+              <div class="stat-val" id="statTestimonials">—</div>
+              <div class="stat-lbl">Témoignages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent messages + Quick actions -->
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="table-card">
+            <div class="table-header">
+              <h3><i class="fa-solid fa-envelope me-2 text-orange"></i>Messages récents</h3>
+              <a href="messages.html" class="btn-admin secondary" style="font-size:.78rem;padding:.4rem .9rem;">Voir tous</a>
+            </div>
+            <div id="recentMessages">
+              <div class="spinner-admin"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <!-- Actions rapides -->
+          <div class="table-card mb-3">
+            <div class="table-header">
+              <h3><i class="fa-solid fa-bolt me-2 text-orange"></i>Actions rapides</h3>
+            </div>
+            <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;">
+              <a href="projects.html?new=1" class="btn-admin primary" style="width:100%;justify-content:center;">
+                <i class="fa-solid fa-plus"></i> Nouveau projet
+              </a>
+              <a href="messages.html" class="btn-admin secondary" style="width:100%;justify-content:center;">
+                <i class="fa-solid fa-inbox"></i> Voir les messages
+              </a>
+              <a href="testimonials.html" class="btn-admin secondary" style="width:100%;justify-content:center;">
+                <i class="fa-solid fa-star"></i> Gérer témoignages
+              </a>
+              <a href="settings.html" class="btn-admin secondary" style="width:100%;justify-content:center;">
+                <i class="fa-solid fa-gear"></i> Paramètres du site
+              </a>
+            </div>
+          </div>
+
+          <!-- Derniers projets -->
+          <div class="table-card">
+            <div class="table-header">
+              <h3><i class="fa-solid fa-clapperboard me-2 text-orange"></i>Derniers projets</h3>
+              <a href="projects.html" class="btn-admin secondary" style="font-size:.78rem;padding:.4rem .9rem;">Voir tous</a>
+            </div>
+            <div id="recentProjects">
+              <div class="spinner-admin"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', {
+  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+});
+
+async function loadDashboard() {
+  try {
+    const data = await apiGet('/dashboard');
+    if (!data) return;
+
+    // Stats
+    document.getElementById('statProjects').textContent     = data.stats?.projects    ?? 0;
+    document.getElementById('statMessages').textContent     = data.stats?.messages    ?? 0;
+    document.getElementById('statUnread').textContent       = data.stats?.unread      ?? 0;
+    document.getElementById('statTestimonials').textContent = data.stats?.testimonials ?? 0;
+
+    const unread = data.stats?.unread ?? 0;
+    const badge = document.getElementById('unreadBadge');
+    if (unread > 0) badge.textContent = unread;
+
+    // Messages récents
+    const msgs = data.recent_messages || [];
+    const msgContainer = document.getElementById('recentMessages');
+    if (!msgs.length) {
+      msgContainer.innerHTML = `<p class="text-dim text-center" style="padding:1.5rem;font-size:.85rem;">Aucun message.</p>`;
+    } else {
+      msgContainer.innerHTML = `
+        <table class="admin-table">
+          <thead><tr>
+            <th>Expéditeur</th>
+            <th>Sujet</th>
+            <th>Date</th>
+            <th>Statut</th>
+          </tr></thead>
+          <tbody>
+            ${msgs.map(m => `
+              <tr>
+                <td><strong>${escHtml(m.name)}</strong><br><span style="font-size:.78rem;">${escHtml(m.email)}</span></td>
+                <td>${escHtml(m.subject || '—')}</td>
+                <td style="white-space:nowrap;">${fmtDate(m.created_at)}</td>
+                <td><span class="badge-admin ${m.status === 'unread' ? 'unread' : 'read'}">${m.status === 'unread' ? 'Non lu' : 'Lu'}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    // Projets récents
+    const projs = data.recent_projects || [];
+    const projContainer = document.getElementById('recentProjects');
+    if (!projs.length) {
+      projContainer.innerHTML = `<p class="text-dim text-center" style="padding:1.5rem;font-size:.85rem;">Aucun projet.</p>`;
+    } else {
+      projContainer.innerHTML = `
+        <table class="admin-table">
+          <thead><tr><th>Titre</th><th>Catégorie</th><th>Statut</th></tr></thead>
+          <tbody>
+            ${projs.map(p => `
+              <tr>
+                <td><strong>${escHtml(p.title)}</strong></td>
+                <td>${escHtml(p.category || '—')}</td>
+                <td><span class="badge-admin ${p.status === 'published' ? 'published' : 'draft'}">${p.status === 'published' ? 'Publié' : 'Brouillon'}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`;
+    }
+
+  } catch (err) {
+    console.error('Dashboard error:', err);
+    showToast('Erreur de chargement des données.', 'error');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+</body>
+</html>
