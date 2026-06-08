@@ -52,7 +52,6 @@
       <div class="topbar-title">
         <button id="menuBtn" class="btn-topbar" style="font-size:22px;">
   ☰ </button>
-         <i class="fa-solid fa-clapperboard text-orange me-2"></i>Gestion des projets
         <i class="fa-solid fa-clapperboard text-orange me-2"></i>Gestion des projets
       </div>
       <div class="topbar-right">
@@ -208,16 +207,54 @@ function renderTable(projects) {
     wrap.innerHTML = `<p class="text-dim text-center" style="padding:2.5rem;">Aucun projet trouvé.</p>`;
     return;
   }
+  if (window.innerWidth <= 768) {
+
+  wrap.innerHTML = projects.map(p => `
+    <div class="project-card">
+      <h4>${escHtml(p.title)}</h4>
+
+      <p><strong>Catégorie :</strong> ${escHtml(p.category || '—')}</p>
+
+      <p>
+        <strong>Statut :</strong>
+        <span class="badge-admin ${p.status === 'published' ? 'published' : 'draft'}">
+          ${p.status === 'published' ? 'Publié' : 'Brouillon'}
+        </span>
+      </p>
+
+      <p><strong>Date :</strong> ${fmtDate(p.created_at)}</p>
+
+      <div class="project-actions">
+        <button class="btn-action edit" onclick="editProject(${p.id})">
+          <i class="fa-solid fa-pen"></i>
+        </button>
+
+        <button class="btn-action ${p.status === 'published' ? 'view' : 'approve'}"
+                onclick="toggleStatus(${p.id})">
+          <i class="fa-solid fa-${p.status === 'published' ? 'eye-slash' : 'eye'}"></i>
+        </button>
+
+        <button class="btn-action delete"
+                onclick="promptDelete(${p.id}, '${escHtml(p.title)}')">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+} else {
 
   wrap.innerHTML = `
     <table class="admin-table">
-      <thead><tr>
-        <th>Titre</th>
-        <th>Catégorie</th>
-        <th>Statut</th>
-        <th>Créé le</th>
-        <th>Actions</th>
-      </tr></thead>
+        <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Catégorie</th>
+          <th>Statut</th>
+          <th>Créé le</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
       <tbody>
         ${projects.map(p => `
           <tr>
@@ -230,16 +267,27 @@ function renderTable(projects) {
             </td>
             <td>${fmtDate(p.created_at)}</td>
             <td>
-              <button class="btn-action edit"   onclick="editProject(${p.id})" title="Modifier"><i class="fa-solid fa-pen"></i></button>
-              <button class="btn-action ${p.status === 'published' ? 'view' : 'approve'}" onclick="toggleStatus(${p.id})" title="${p.status === 'published' ? 'Dépublier' : 'Publier'}">
+              <button class="btn-action edit" onclick="editProject(${p.id})">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+
+              <button class="btn-action ${p.status === 'published' ? 'view' : 'approve'}"
+                      onclick="toggleStatus(${p.id})">
                 <i class="fa-solid fa-${p.status === 'published' ? 'eye-slash' : 'eye'}"></i>
               </button>
-              <button class="btn-action delete" onclick="promptDelete(${p.id}, '${escHtml(p.title)}')" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
+
+              <button class="btn-action delete"
+                      onclick="promptDelete(${p.id}, '${escHtml(p.title)}')">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </td>
           </tr>
         `).join('')}
       </tbody>
-    </table>`;
+    </table>
+  `;
+}
+
 }
 
 // Open modal for new project

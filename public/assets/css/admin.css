@@ -814,3 +814,21 @@ textarea.form-control-admin { resize: vertical; min-height: 100px; }
     background:var(--orange);
   }
 }
+
+.project-card{
+  background:var(--noir-2);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:1rem;
+  margin-bottom:1rem;
+}
+
+.project-card h4{
+  margin-bottom:.75rem;
+}
+
+.project-actions{
+  display:flex;
+  gap:.75rem;
+  margin-top:1rem;
+}
