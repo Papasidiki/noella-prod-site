@@ -763,3 +763,54 @@ textarea.form-control-admin { resize: vertical; min-height: 100px; }
     z-index:-1;
   }
 }
+
+#menuBtn{
+  position: relative;
+  z-index: 10000;
+}
+
+@media (max-width:768px){
+
+  .admin-topbar{
+    position: sticky;
+    top: 0;
+    z-index: 10001;
+  }
+
+  .sidebar{
+    z-index: 9999;
+  }
+
+}
+.close-sidebar{
+  display:none;
+}
+
+@media(max-width:768px){
+
+  .close-sidebar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:absolute;
+    top:12px;
+    right:12px;
+
+    width:36px;
+    height:36px;
+
+    background:rgba(232,99,26,.15);
+    border:1px solid rgba(232,99,26,.25);
+    border-radius:50%;
+
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+
+    z-index:10001;
+  }
+
+  .close-sidebar:hover{
+    background:var(--orange);
+  }
+}
