@@ -16,8 +16,7 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// On dit au serveur de rendre le dossier racine 'admin' accessible via l'URL '/admin'
-app.use('/admin', express.static(path.join(__dirname, 'admin')));
+
 /* ── Navbar scroll ─────────────────────────────────────────── */
 const navbar = document.getElementById('navbar');
 if (navbar) {
