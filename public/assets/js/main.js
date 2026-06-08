@@ -2,7 +2,7 @@
    NOELLA-PROD — main.js
    ============================================================ */
 
-const API_BASE = '/api';
+const API_BASE = 'https://noella-prod.sanoh5347.workers.dev/api';
 
 /* ── Scroll Reveal ─────────────────────────────────────────── */
 const revealObserver = new IntersectionObserver((entries) => {
