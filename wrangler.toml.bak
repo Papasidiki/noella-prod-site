@@ -33,9 +33,9 @@ ENVIRONMENT = "production"
 # Le worker intercepte toutes les requêtes /api/*
 # Les autres routes sont servies par Cloudflare Pages (ASSETS)
 
-# ── Assets (Pages) ───────────────────────────────────────────
-[site]
-bucket = "./"
+# ── Assets ───────────────────────────────────────────────────
+[assets]
+directory = "./"
 
 # ── Dev Config ───────────────────────────────────────────────
 [dev]
