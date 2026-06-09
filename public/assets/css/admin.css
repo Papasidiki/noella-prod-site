@@ -665,10 +665,7 @@ textarea.form-control-admin { resize: vertical; min-height: 100px; }
   .sidebar.open { transform: translateX(0); }
   .admin-main { margin-left: 0; }
   .admin-content { padding: 1.25rem 1rem; }
-   .admin-table th:nth-child(n+4),
-  .admin-table td:nth-child(n+4) {
-    display: none;
-  }
+  
   
 }
 
@@ -818,34 +815,39 @@ textarea.form-control-admin { resize: vertical; min-height: 100px; }
   }
 }
 
-.project-card{
-  background:var(--noir-2);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;
-  padding:1rem;
-  margin-bottom:1rem;
-}
 
-.project-card h4{
-  margin-bottom:.75rem;
-}
-
-.project-actions{
-  display:flex;
-  gap:.75rem;
-  margin-top:1rem;
-}
 
 @media (max-width:768px){
 
   .table-card{
     overflow-x:auto;
-    -webkit-overflow-scrolling: touch;
-     width:100%;
+    -webkit-overflow-scrolling:touch;
+    max-width:100%;
   }
-.table-card .admin-table{
-    min-width:700px;
+
+  .admin-table{
+    width:100%;
   }
-   
+
+}
+
+@media (max-width:768px){
+
+  html{
+    font-size:13px;
+  }
+
+  .admin-content{
+    padding:1rem;
+  }
+
+  .stat-card{
+    min-height:auto;
+    padding:1rem;
+  }
+
+  .stat-val{
+    font-size:1.5rem;
+  }
 
 }
